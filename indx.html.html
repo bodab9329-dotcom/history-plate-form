@@ -1,0 +1,845 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);background:var(--surface-0);color:var(--text-primary);direction:rtl}
+:root{--br:#8B4513;--brd:#6B3010;--brl:#D2691E;--gld:#C4A882}
+.hidden{display:none!important}
+.nav{background:var(--surface-2);border-bottom:0.5px solid var(--border);padding:0 1.2rem;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:100}
+.nav-brand{display:flex;align-items:center;gap:9px;font-size:17px;font-weight:500}
+.nav-logo{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#8B4513,#D2691E);display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px}
+.nav-btn{padding:5px 12px;border-radius:var(--radius);font-size:13px;cursor:pointer;color:var(--text-secondary);border:none;background:none;font-family:inherit;transition:.15s}
+.nav-btn:hover{background:var(--surface-1);color:var(--text-primary)}
+.admin-bar{background:#2C1810;padding:7px 1.2rem;display:none;align-items:center;gap:10px;flex-wrap:wrap}
+.admin-bar.on{display:flex}
+.admin-bar-txt{color:var(--gld);font-size:13px;flex:1}
+.hero{background:linear-gradient(160deg,#1e0f08,#4A2C1A,#6B3A20);padding:2rem 1.5rem;text-align:center}
+.hero h1{font-size:26px;font-weight:500;color:#F5E6D0;margin-bottom:5px}
+.hero p{color:var(--gld);font-size:14px}
+.hero-stats{display:flex;gap:1.5rem;justify-content:center;margin-top:1rem}
+.stat{text-align:center}
+.stat-n{font-size:20px;font-weight:500;color:#F5E6D0}
+.stat-l{font-size:11px;color:var(--gld)}
+.tabs{display:flex;gap:0;border-bottom:0.5px solid var(--border);background:var(--surface-2);padding:0 1.2rem}
+.tab{padding:10px 15px;font-size:13px;cursor:pointer;border:none;background:none;color:var(--text-secondary);border-bottom:2px solid transparent;font-family:inherit;transition:.15s}
+.tab:hover{color:var(--text-primary)}
+.tab.act{color:var(--br);border-bottom-color:var(--br);font-weight:500}
+.main{max-width:940px;margin:0 auto;padding:1.2rem 1rem}
+.sec-title{font-size:15px;font-weight:500;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+.sec-title::after{content:'';flex:1;height:0.5px;background:var(--border)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
+.card{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:.2s}
+.card:hover{border-color:var(--border-strong);transform:translateY(-2px)}
+.card-thumb{width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,#2C1810,#6B3A20);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.card-thumb img{width:100%;height:100%;object-fit:cover}
+.thumb-ov{position:absolute;inset:0;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;opacity:0;transition:.2s}
+.card:hover .thumb-ov{opacity:1}
+.play-ic{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;color:#2C1810;font-size:15px}
+.card-badge{position:absolute;top:8px;right:8px;background:rgba(139,69,19,0.9);color:#fff;font-size:11px;padding:3px 8px;border-radius:20px}
+.vid-count-badge{position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.7);color:#fff;font-size:11px;padding:3px 8px;border-radius:20px;display:flex;align-items:center;gap:4px}
+.card-body{padding:10px 13px}
+.card-title{font-size:13px;font-weight:500;margin-bottom:4px;line-height:1.4}
+.card-meta{font-size:12px;color:var(--text-muted)}
+.grade-tag{display:inline-block;font-size:11px;padding:2px 7px;border-radius:20px;background:rgba(139,69,19,0.12);color:var(--br);margin-bottom:4px}
+.era-tag{display:inline-block;font-size:11px;padding:2px 7px;border-radius:20px;background:var(--bg-accent);color:var(--text-accent);margin-bottom:4px}
+.card-actions{display:flex;gap:6px;padding:0 13px 10px}
+.ca-btn{flex:1;padding:5px;border-radius:var(--radius);font-size:12px;cursor:pointer;border:0.5px solid var(--border);background:none;color:var(--text-secondary);font-family:inherit;transition:.15s;display:flex;align-items:center;justify-content:center;gap:3px}
+.ca-btn:hover{background:var(--bg-danger);color:var(--text-danger);border-color:var(--border-danger)}
+.ca-edit:hover{background:var(--bg-accent);color:var(--text-accent);border-color:var(--border-accent)}
+.locked-ov{position:absolute;inset:0;background:rgba(0,0,0,0.55);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#fff}
+.locked-ov i{font-size:26px}
+.locked-ov span{font-size:11px;opacity:.8}
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:200;align-items:center;justify-content:center;padding:1rem}
+.modal-bg.open{display:flex}
+.modal{background:var(--surface-2);border-radius:16px;width:100%;max-width:520px;border:0.5px solid var(--border);overflow:hidden;max-height:92vh;display:flex;flex-direction:column}
+.modal-lg{max-width:660px}
+.modal-xl{max-width:800px}
+.modal-header{padding:1rem 1.3rem;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.modal-title{font-size:15px;font-weight:500}
+.modal-close{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:18px;padding:3px;border-radius:var(--radius)}
+.modal-close:hover{background:var(--surface-1)}
+.modal-body{padding:1.2rem;overflow-y:auto;flex:1}
+.modal-footer{padding:.9rem 1.3rem;border-top:0.5px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-shrink:0}
+.form-group{margin-bottom:.85rem}
+.form-label{font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block}
+.form-input,.form-select,.form-textarea{width:100%;padding:7px 10px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--surface-1);color:var(--text-primary);font-size:13px;font-family:inherit}
+.form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--border-accent)}
+.form-textarea{resize:vertical;min-height:60px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{padding:7px 15px;border-radius:var(--radius);font-size:13px;cursor:pointer;border:0.5px solid var(--border);background:var(--surface-1);color:var(--text-primary);font-family:inherit;transition:.15s}
+.btn:hover{background:var(--surface-0)}
+.btn-primary{background:var(--br);color:#fff;border-color:var(--br)}
+.btn-primary:hover{background:var(--brd)}
+.btn-success{background:var(--bg-success);color:var(--text-success);border-color:var(--border-success)}
+.btn-danger{background:var(--bg-danger);color:var(--text-danger);border-color:var(--border-danger)}
+.btn-sm{padding:4px 10px;font-size:12px}
+.err{font-size:12px;color:var(--text-danger);margin-top:4px;display:none}
+.err.on{display:block}
+/* PLAYLIST VIEWER */
+.playlist-layout{display:grid;grid-template-columns:1fr 280px;gap:1rem}
+@media(max-width:600px){.playlist-layout{grid-template-columns:1fr}}
+.vplayer{width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.vplayer iframe{width:100%;height:100%;border:none}
+.vplayer-ph{text-align:center;color:#888;padding:1.5rem}
+.v-info{margin-top:.8rem}
+.v-title{font-size:14px;font-weight:500;margin-bottom:4px}
+.v-meta{font-size:12px;color:var(--text-muted)}
+.playlist-panel{background:var(--surface-1);border-radius:10px;border:0.5px solid var(--border);overflow:hidden}
+.playlist-header{padding:10px 12px;border-bottom:0.5px solid var(--border);font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:space-between}
+.playlist-items{overflow-y:auto;max-height:340px}
+.pl-item{display:flex;gap:8px;padding:8px 10px;cursor:pointer;border-bottom:0.5px solid var(--border);transition:.15s;align-items:flex-start}
+.pl-item:last-child{border-bottom:none}
+.pl-item:hover{background:var(--surface-2)}
+.pl-item.active{background:rgba(139,69,19,0.1);border-right:2px solid var(--br)}
+.pl-thumb{width:70px;height:42px;border-radius:5px;background:linear-gradient(135deg,#2C1810,#6B3A20);flex-shrink:0;overflow:hidden;position:relative}
+.pl-thumb img{width:100%;height:100%;object-fit:cover}
+.pl-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,0.7);font-weight:500}
+.pl-item.active .pl-num{color:#fff}
+.pl-info{flex:1;min-width:0}
+.pl-title{font-size:12px;font-weight:500;line-height:1.3;margin-bottom:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.pl-dur{font-size:11px;color:var(--text-muted)}
+/* VIDEO BUILDER */
+.vb-list{display:flex;flex-direction:column;gap:8px}
+.vb-item{background:var(--surface-1);border:0.5px solid var(--border);border-radius:8px;padding:10px}
+.vb-item-header{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.vb-num{width:22px;height:22px;border-radius:50%;background:var(--br);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.vb-item-title{font-size:12px;font-weight:500;flex:1}
+.vb-remove{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px;line-height:1;padding:2px}
+.vb-remove:hover{color:var(--text-danger)}
+/* FILE UPLOAD */
+.upload-area{border:1.5px dashed var(--border);border-radius:8px;padding:.8rem;text-align:center;cursor:pointer;color:var(--text-muted);font-size:12px;transition:.15s;position:relative}
+.upload-area:hover{border-color:var(--border-accent);color:var(--text-accent)}
+.upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+/* STUDENTS TABLE */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{padding:7px 10px;text-align:right;font-weight:500;border-bottom:0.5px solid var(--border);color:var(--text-secondary);white-space:nowrap}
+td{padding:7px 10px;border-bottom:0.5px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+.badge{display:inline-flex;align-items:center;gap:3px;font-size:11px;padding:2px 7px;border-radius:20px}
+.badge-pending{background:var(--bg-warning);color:var(--text-warning)}
+.badge-approved{background:var(--bg-success);color:var(--text-success)}
+.badge-rejected{background:var(--bg-danger);color:var(--text-danger)}
+.enroll-list{display:flex;flex-direction:column;gap:5px;max-height:200px;overflow-y:auto}
+.enroll-item{display:flex;align-items:center;gap:8px;padding:6px 9px;border-radius:7px;background:var(--surface-1);border:0.5px solid var(--border);font-size:12px}
+.enroll-item input{accent-color:var(--br);width:14px;height:14px;flex-shrink:0}
+.toast{position:fixed;bottom:18px;right:18px;background:var(--br);color:#fff;padding:8px 15px;border-radius:var(--radius);font-size:13px;z-index:400;opacity:0;transform:translateY(8px);transition:.3s;pointer-events:none;max-width:260px}
+.toast.on{opacity:1;transform:translateY(0)}
+.exam-card{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:.2s}
+.exam-card:hover{border-color:var(--border-strong);transform:translateY(-2px)}
+.q-item{background:var(--surface-1);border-radius:7px;padding:9px;font-size:13px;margin-bottom:6px}
+.q-img{width:100%;border-radius:5px;margin-top:5px;max-height:130px;object-fit:cover}
+.empty{text-align:center;padding:2rem 1rem;color:var(--text-muted);grid-column:1/-1}
+</style>
+
+<h2 class="sr-only">منصة التاريخ التعليمية</h2>
+<div class="toast" id="toast"></div>
+
+<nav class="nav">
+  <div class="nav-brand"><div class="nav-logo">🏛</div><span>منصة التاريخ</span></div>
+  <div style="display:flex;gap:4px;align-items:center">
+    <span id="userChip" style="display:none;font-size:12px;padding:4px 10px;background:var(--surface-1);border-radius:20px;border:0.5px solid var(--border)"></span>
+    <button class="nav-btn hidden" id="btnLogout" onclick="doLogout()"><i class="ti ti-logout" aria-hidden="true"></i> خروج</button>
+    <button class="nav-btn" id="btnStudentLogin" onclick="openModal('studentLoginModal')"><i class="ti ti-user" aria-hidden="true"></i> تسجيل الدخول</button>
+  </div>
+</nav>
+
+<div class="admin-bar" id="adminBar">
+  <span style="background:rgba(139,69,19,0.4);color:#C4A882;font-size:11px;padding:2px 8px;border-radius:20px;border:0.5px solid rgba(139,69,19,0.6);white-space:nowrap">مشرف</span>
+  <span class="admin-bar-txt">أهلاً <strong style="color:#F5E6D0">mohamedgalal888</strong></span>
+  <button class="btn btn-sm btn-primary" onclick="openAddCourse()"><i class="ti ti-plus" aria-hidden="true"></i> كورس جديد</button>
+  <button class="btn btn-sm" onclick="openModal('addExamModal')" style="font-size:12px"><i class="ti ti-file-text" aria-hidden="true"></i> امتحان</button>
+  <button class="btn btn-sm" onclick="doLogout()" style="font-size:12px;color:#C4A882;border-color:rgba(139,69,19,0.4);background:rgba(139,69,19,0.15)">خروج</button>
+</div>
+
+<div class="hero">
+  <h1>🏛 منصة التاريخ التعليمية</h1>
+  <p>كورسات وامتحانات للصفوف الدراسية</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-n" id="stC">0</div><div class="stat-l">كورس</div></div>
+    <div class="stat"><div class="stat-n" id="stV">0</div><div class="stat-l">فيديو شرح</div></div>
+    <div class="stat"><div class="stat-n" id="stS">0</div><div class="stat-l">طالب</div></div>
+    <div class="stat"><div class="stat-n" id="stE">0</div><div class="stat-l">امتحان</div></div>
+  </div>
+</div>
+
+<div class="tabs" id="mainTabs">
+  <button class="tab act" onclick="showTab('courses',this)">الكورسات</button>
+  <button class="tab" onclick="showTab('exams',this)">الامتحانات</button>
+  <button class="tab hidden" id="tabStudentsBtn" onclick="showTab('students',this)">إدارة الطلاب</button>
+</div>
+
+<div class="main">
+  <div id="pageCourses">
+    <div class="sec-title"><i class="ti ti-book" aria-hidden="true"></i> الكورسات المتاحة</div>
+    <div class="grid" id="coursesGrid"></div>
+  </div>
+  <div id="pageExams" style="display:none">
+    <div class="sec-title"><i class="ti ti-file-text" aria-hidden="true"></i> الامتحانات</div>
+    <div class="grid" id="examsGrid"></div>
+  </div>
+  <div id="pageStudents" style="display:none">
+    <div class="sec-title"><i class="ti ti-users" aria-hidden="true"></i> إدارة الطلاب</div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>الاسم</th><th>الصف</th><th>الترم</th><th>ولي الأمر</th><th>رقم الطالب</th><th>رقم ولي الأمر</th><th>الحالة</th><th>الكورسات</th><th>إجراء</th></tr></thead>
+      <tbody id="studentsTbody"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ====== MODALS ====== -->
+
+<!-- STUDENT LOGIN -->
+<div class="modal-bg" id="studentLoginModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">تسجيل الدخول</span>
+      <button class="modal-close" onclick="closeModal('studentLoginModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;gap:0;margin-bottom:1rem;border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden">
+        <button id="slTab1" onclick="slSwitch('login')" style="flex:1;padding:7px;font-size:13px;border:none;cursor:pointer;background:var(--br);color:#fff;font-family:inherit">تسجيل دخول</button>
+        <button id="slTab2" onclick="slSwitch('register')" style="flex:1;padding:7px;font-size:13px;border:none;cursor:pointer;background:var(--surface-1);color:var(--text-secondary);font-family:inherit">حساب جديد</button>
+      </div>
+      <div id="slLoginForm">
+        <div class="form-group"><label class="form-label">رقم الطالب</label><input class="form-input" id="lPhone" placeholder="01xxxxxxxxx" onkeydown="if(event.key==='Enter')doStudentLogin()"></div>
+        <div class="form-group"><label class="form-label">رقم ولي الأمر (كلمة المرور)</label><input class="form-input" type="password" id="lPPhone" placeholder="01xxxxxxxxx" onkeydown="if(event.key==='Enter')doStudentLogin()"></div>
+        <div class="err" id="lErr">بيانات خاطئة أو الحساب لم يُوافق عليه بعد</div>
+        <div id="adminSec" style="display:none;margin-top:1rem;padding-top:1rem;border-top:0.5px solid var(--border)">
+          <div style="font-size:12px;color:var(--text-muted);text-align:center;margin-bottom:.7rem">دخول المشرف</div>
+          <div class="form-group"><label class="form-label">اسم المشرف</label><input class="form-input" id="aUser" onkeydown="if(event.key==='Enter')doAdminLogin()"></div>
+          <div class="form-group"><label class="form-label">كلمة المرور</label><input class="form-input" type="password" id="aPass" onkeydown="if(event.key==='Enter')doAdminLogin()"></div>
+          <div class="err" id="aErr">بيانات المشرف غير صحيحة</div>
+          <button class="btn btn-primary" style="width:100%;margin-top:.4rem" onclick="doAdminLogin()">دخول كمشرف</button>
+        </div>
+        <div style="text-align:center;margin-top:.7rem"><span style="font-size:10px;color:var(--surface-1);cursor:default;user-select:none" id="adminDot" onclick="trigAdmin()">●</span></div>
+      </div>
+      <div id="slRegForm" style="display:none">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">اسم الطالب *</label><input class="form-input" id="rName" placeholder="الاسم الكامل"></div>
+          <div class="form-group"><label class="form-label">رقم الطالب *</label><input class="form-input" id="rPhone" placeholder="01xxxxxxxxx"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">اسم ولي الأمر *</label><input class="form-input" id="rPName" placeholder="اسم ولي الأمر"></div>
+          <div class="form-group"><label class="form-label">رقم ولي الأمر *</label><input class="form-input" id="rPPhone" placeholder="01xxxxxxxxx"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">الصف الدراسي *</label>
+            <select class="form-select" id="rGrade">
+              <option value="">اختر الصف</option>
+              <option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option>
+              <option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option>
+              <option>الصف الأول الثانوي</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">الفصل الدراسي *</label>
+            <select class="form-select" id="rTerm"><option value="">اختر الترم</option><option>الترم الأول</option><option>الترم الثاني</option></select>
+          </div>
+        </div>
+        <div class="err" id="rErr">يرجى تعبئة جميع الحقول</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('studentLoginModal')">إلغاء</button>
+      <button class="btn btn-primary" id="slActBtn" onclick="doStudentLogin()">دخول</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD/EDIT COURSE -->
+<div class="modal-bg" id="addCourseModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title" id="acModalTitle">إضافة كورس جديد</span>
+      <button class="modal-close" onclick="closeModal('addCourseModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="acId">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">اسم الكورس *</label><input class="form-input" id="acName" placeholder="مثال: تاريخ مصر القديمة"></div>
+        <div class="form-group"><label class="form-label">وصف مختصر</label><input class="form-input" id="acDesc" placeholder="وصف الكورس..."></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">الصف الدراسي *</label>
+          <select class="form-select" id="acGrade">
+            <option value="">اختر الصف</option>
+            <option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option>
+            <option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option>
+            <option>الصف الأول الثانوي</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">الفصل الدراسي *</label>
+          <select class="form-select" id="acTerm"><option value="">اختر الترم</option><option>الترم الأول</option><option>الترم الثاني</option></select>
+        </div>
+      </div>
+
+      <!-- VIDEOS SECTION -->
+      <div style="border-top:0.5px solid var(--border);padding-top:.9rem;margin-top:.3rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.7rem">
+          <span style="font-size:13px;font-weight:500"><i class="ti ti-video" aria-hidden="true"></i> فيديوهات الشرح</span>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-sm" onclick="addVideoRow('yt')"><i class="ti ti-brand-youtube" aria-hidden="true"></i> رابط يوتيوب</button>
+            <button class="btn btn-sm" onclick="addVideoRow('file')"><i class="ti ti-upload" aria-hidden="true"></i> رفع فيديو</button>
+          </div>
+        </div>
+        <div class="vb-list" id="videoBuilder"></div>
+        <div id="vbEmpty" style="text-align:center;padding:.8rem;font-size:12px;color:var(--text-muted);border:0.5px dashed var(--border);border-radius:8px">لم تُضف فيديوهات بعد — اضغط "رابط يوتيوب" أو "رفع فيديو"</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('addCourseModal')">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveCourse()">حفظ الكورس</button>
+    </div>
+  </div>
+</div>
+
+<!-- PLAYLIST VIEWER -->
+<div class="modal-bg" id="playlistModal">
+  <div class="modal modal-xl">
+    <div class="modal-header">
+      <span class="modal-title" id="plModalTitle"></span>
+      <button class="modal-close" onclick="closeModal('playlistModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="margin-bottom:.6rem"><span class="grade-tag" id="plGrade"></span> <span class="era-tag" id="plTerm"></span></div>
+      <div class="playlist-layout">
+        <div>
+          <div class="vplayer" id="plPlayer"></div>
+          <div class="v-info">
+            <div class="v-title" id="plVTitle"></div>
+            <div class="v-meta" id="plVMeta"></div>
+          </div>
+        </div>
+        <div class="playlist-panel">
+          <div class="playlist-header">
+            <span id="plCount"></span>
+            <span style="font-size:11px;color:var(--text-muted)" id="plCurrent"></span>
+          </div>
+          <div class="playlist-items" id="plItems"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD EXAM -->
+<div class="modal-bg" id="addExamModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title">إضافة امتحان جديد</span>
+      <button class="modal-close" onclick="closeModal('addExamModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">اسم الامتحان *</label><input class="form-input" id="exName" placeholder="امتحان الوحدة الأولى..."></div>
+        <div class="form-group"><label class="form-label">الصف الدراسي *</label>
+          <select class="form-select" id="exGrade">
+            <option value="">اختر الصف</option>
+            <option>الصف الرابع الابتدائي</option><option>الصف الخامس الابتدائي</option><option>الصف السادس الابتدائي</option>
+            <option>الصف الأول الإعدادي</option><option>الصف الثاني الإعدادي</option><option>الصف الثالث الإعدادي</option>
+            <option>الصف الأول الثانوي</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">الفصل الدراسي</label>
+          <select class="form-select" id="exTerm"><option value="">اختر الترم</option><option>الترم الأول</option><option>الترم الثاني</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">المدة (دقيقة)</label><input class="form-input" id="exDur" type="number" value="60"></div>
+      </div>
+      <div style="border-top:0.5px solid var(--border);padding-top:.9rem;margin-top:.3rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.7rem">
+          <span style="font-size:13px;font-weight:500">الأسئلة</span>
+          <button class="btn btn-sm btn-primary" onclick="addQ()"><i class="ti ti-plus" aria-hidden="true"></i> سؤال</button>
+        </div>
+        <div id="qBuilder"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('addExamModal')">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveExam()">حفظ الامتحان</button>
+    </div>
+  </div>
+</div>
+
+<!-- VIEW EXAM -->
+<div class="modal-bg" id="viewExamModal">
+  <div class="modal modal-lg">
+    <div class="modal-header"><span class="modal-title" id="veTitle"></span><button class="modal-close" onclick="closeModal('viewExamModal')">✕</button></div>
+    <div class="modal-body">
+      <div id="veMeta" style="margin-bottom:.8rem;font-size:12px;color:var(--text-muted)"></div>
+      <div id="veQs"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ENROLL -->
+<div class="modal-bg" id="enrollModal">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">تسجيل في كورسات — <span id="enrollName"></span></span><button class="modal-close" onclick="closeModal('enrollModal')">✕</button></div>
+    <div class="modal-body">
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:.7rem">اختر الكورسات:</p>
+      <div class="enroll-list" id="enrollList"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('enrollModal')">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveEnroll()">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const AU='mohamedgalal888',AP='p1p2p3p4';
+let role=null,curStudent=null,adminClicks=0,enrollSid=null,qCnt=0,vbCnt=0;
+let currentPlaylistCourseId=null,currentVidIdx=0;
+
+let courses=[
+  {id:1,name:'مصر القديمة والحضارة الفرعونية',grade:'الصف السادس الابتدائي',term:'الترم الأول',desc:'رحلة في عالم الفراعنة',
+   videos:[
+    {title:'مقدمة - الحضارة الفرعونية',type:'yt',url:'https://www.youtube.com/watch?v=8YnkCyHC2O4'},
+    {title:'الأهرامات والمعابد',type:'yt',url:'https://www.youtube.com/watch?v=dFCrAEe-4Fs'},
+  ]},
+  {id:2,name:'صدر الإسلام والخلافة الراشدة',grade:'الصف الأول الإعدادي',term:'الترم الأول',desc:'من البعثة النبوية للفتوحات',
+   videos:[
+    {title:'البعثة النبوية الشريفة',type:'yt',url:'https://www.youtube.com/watch?v=dFCrAEe-4Fs'},
+  ]},
+];
+let exams=[
+  {id:1,name:'امتحان الوحدة الأولى',grade:'الصف السادس الابتدائي',term:'الترم الأول',duration:45,
+   questions:[{text:'ما اسم نهر مصر؟',img:''},{text:'من بنى الأهرامات؟',img:''}]},
+];
+let students=[
+  {id:1,name:'أحمد محمد',phone:'01012345678',parentName:'محمد علي',parentPhone:'01098765432',grade:'الصف السادس الابتدائي',term:'الترم الأول',status:'approved',enrolled:[1]},
+  {id:2,name:'سارة أحمد',phone:'01123456789',parentName:'أحمد حسن',parentPhone:'01187654321',grade:'الصف الأول الإعدادي',term:'الترم الأول',status:'pending',enrolled:[]},
+];
+let ncId=3,neId=2,nsId=3;
+
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2800)}
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){
+  document.getElementById(id).classList.remove('open');
+  if(id==='playlistModal')document.getElementById('plPlayer').innerHTML='';
+}
+function ytId(url){const m=(url||'').match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?/]+)/);return m?m[1]:null}
+function ytThumb(url){const id=ytId(url);return id?`https://img.youtube.com/vi/${id}/mqdefault.jpg`:'';}
+
+function stats(){
+  document.getElementById('stC').textContent=courses.length;
+  document.getElementById('stV').textContent=courses.reduce((a,c)=>a+(c.videos||[]).length,0);
+  document.getElementById('stS').textContent=students.filter(s=>s.status==='approved').length;
+  document.getElementById('stE').textContent=exams.length;
+}
+
+function showTab(t,el){
+  ['pageCourses','pageExams','pageStudents'].forEach(p=>document.getElementById(p).style.display='none');
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('act'));
+  document.getElementById('page'+t.charAt(0).toUpperCase()+t.slice(1)).style.display='';
+  if(el)el.classList.add('act');
+  if(t==='courses')renderCourses();
+  if(t==='exams')renderExams();
+  if(t==='students')renderStudents();
+}
+
+// ADMIN
+let adminDotClicks=0;
+function trigAdmin(){adminDotClicks++;if(adminDotClicks>=5){document.getElementById('adminSec').style.display='block';adminDotClicks=0;}}
+function doAdminLogin(){
+  const u=document.getElementById('aUser').value.trim(),p=document.getElementById('aPass').value;
+  if(u===AU&&p===AP){
+    role='admin';
+    document.getElementById('adminBar').classList.add('on');
+    document.getElementById('tabStudentsBtn').classList.remove('hidden');
+    document.getElementById('btnLogout').classList.remove('hidden');
+    document.getElementById('btnStudentLogin').classList.add('hidden');
+    document.getElementById('userChip').style.display='';
+    document.getElementById('userChip').textContent='👑 '+AU;
+    closeModal('studentLoginModal');
+    toast('👑 أهلاً بك يا mohamedgalal888!');
+    renderCourses();stats();
+  } else document.getElementById('aErr').classList.add('on');
+}
+
+// STUDENT LOGIN/REGISTER
+let slMode='login';
+function slSwitch(m){
+  slMode=m;
+  document.getElementById('slLoginForm').style.display=m==='login'?'':'none';
+  document.getElementById('slRegForm').style.display=m==='register'?'':'none';
+  document.getElementById('slTab1').style.cssText=`flex:1;padding:7px;font-size:13px;border:none;cursor:pointer;font-family:inherit;background:${m==='login'?'var(--br)':'var(--surface-1)'};color:${m==='login'?'#fff':'var(--text-secondary)'}`;
+  document.getElementById('slTab2').style.cssText=`flex:1;padding:7px;font-size:13px;border:none;cursor:pointer;font-family:inherit;background:${m==='register'?'var(--br)':'var(--surface-1)'};color:${m==='register'?'#fff':'var(--text-secondary)'}`;
+  document.getElementById('slActBtn').textContent=m==='login'?'دخول':'تسجيل';
+  document.getElementById('slActBtn').onclick=m==='login'?doStudentLogin:doStudentReg;
+}
+function doStudentLogin(){
+  const ph=document.getElementById('lPhone').value.trim(),pp=document.getElementById('lPPhone').value.trim();
+  const s=students.find(x=>x.phone===ph&&x.parentPhone===pp);
+  const err=document.getElementById('lErr');
+  if(!s){err.textContent='بيانات خاطئة';err.classList.add('on');return}
+  if(s.status!=='approved'){err.textContent='حسابك قيد المراجعة من المشرف';err.classList.add('on');return}
+  role='student';curStudent=s;
+  document.getElementById('btnLogout').classList.remove('hidden');
+  document.getElementById('btnStudentLogin').classList.add('hidden');
+  document.getElementById('userChip').style.display='';
+  document.getElementById('userChip').textContent='👤 '+s.name;
+  closeModal('studentLoginModal');
+  toast('أهلاً '+s.name+'!');
+  renderCourses();renderExams();
+}
+function doStudentReg(){
+  const n=document.getElementById('rName').value.trim(),ph=document.getElementById('rPhone').value.trim(),pn=document.getElementById('rPName').value.trim(),pp=document.getElementById('rPPhone').value.trim(),g=document.getElementById('rGrade').value,t=document.getElementById('rTerm').value;
+  const err=document.getElementById('rErr');
+  if(!n||!ph||!pn||!pp||!g||!t){err.classList.add('on');return}
+  if(students.find(s=>s.phone===ph)){err.textContent='هذا الرقم مسجل مسبقاً';err.classList.add('on');return}
+  students.push({id:nsId++,name:n,phone:ph,parentName:pn,parentPhone:pp,grade:g,term:t,status:'pending',enrolled:[]});
+  closeModal('studentLoginModal');
+  toast('✅ تم الإرسال — انتظر موافقة المشرف');
+  stats();
+}
+function doLogout(){
+  role=null;curStudent=null;
+  document.getElementById('adminBar').classList.remove('on');
+  document.getElementById('tabStudentsBtn').classList.add('hidden');
+  document.getElementById('btnLogout').classList.add('hidden');
+  document.getElementById('btnStudentLogin').classList.remove('hidden');
+  document.getElementById('userChip').style.display='none';
+  document.getElementById('adminSec').style.display='none';
+  document.getElementById('aUser').value='';document.getElementById('aPass').value='';
+  renderCourses();renderExams();stats();toast('تم تسجيل الخروج');
+}
+
+// COURSES
+function renderCourses(){
+  const g=document.getElementById('coursesGrid');
+  if(!courses.length){g.innerHTML=`<div class="empty"><div style="font-size:36px;margin-bottom:.6rem">📚</div><p>لا توجد كورسات بعد</p></div>`;return}
+  g.innerHTML=courses.map(c=>{
+    const vids=c.videos||[];
+    const thumb=vids.length&&vids[0].type==='yt'?ytThumb(vids[0].url):'';
+    const thumbHtml=thumb?`<img src="${thumb}" onerror="this.style.display='none'" alt="${c.name}">`:'';
+    const isEnrolled=role==='admin'||(curStudent&&curStudent.enrolled.includes(c.id));
+    const locked=(role==='student'&&!isEnrolled)||(!role);
+    const lockOv=locked?`<div class="locked-ov"><i class="ti ti-lock" aria-hidden="true"></i><span>${!role?'سجّل دخولك':'غير مسجّل'}</span></div>`:'';
+    const adminA=role==='admin'?`<div class="card-actions"><button class="ca-btn ca-edit" onclick="event.stopPropagation();editCourse(${c.id})"><i class="ti ti-edit" aria-hidden="true"></i> تعديل</button><button class="ca-btn" onclick="event.stopPropagation();delCourse(${c.id})"><i class="ti ti-trash" aria-hidden="true"></i> حذف</button></div>`:'';
+    return`<div class="card" onclick="openPlaylist(${c.id})">
+      <div class="card-thumb">${thumbHtml}<div class="thumb-ov"><div class="play-ic">▶</div></div>
+        <span class="card-badge">${c.grade}</span>
+        ${vids.length?`<span class="vid-count-badge"><i class="ti ti-video" aria-hidden="true"></i> ${vids.length} فيديو</span>`:''}
+        ${lockOv}
+      </div>
+      <div class="card-body">
+        <span class="grade-tag">${c.term}</span>
+        <div class="card-title">${c.name}</div>
+        <div class="card-meta">${c.desc||''}</div>
+      </div>${adminA}
+    </div>`;
+  }).join('');
+}
+
+function openPlaylist(id){
+  const c=courses.find(x=>x.id===id);if(!c)return;
+  if(!role){toast('🔒 سجّل دخولك أولاً');return}
+  const isEnrolled=role==='admin'||(curStudent&&curStudent.enrolled.includes(id));
+  if(role==='student'&&!isEnrolled){toast('🔒 لست مسجّلاً في هذا الكورس');return}
+  const vids=c.videos||[];
+  currentPlaylistCourseId=id;currentVidIdx=0;
+  document.getElementById('plModalTitle').textContent=c.name;
+  document.getElementById('plGrade').textContent=c.grade;
+  document.getElementById('plTerm').textContent=c.term;
+  document.getElementById('plCount').textContent=`${vids.length} فيديو`;
+  if(!vids.length){
+    document.getElementById('plPlayer').innerHTML=`<div class="vplayer-ph"><div style="font-size:30px;margin-bottom:6px">📽</div><p style="font-size:13px">لا توجد فيديوهات في هذا الكورس بعد</p></div>`;
+    document.getElementById('plItems').innerHTML='';
+    document.getElementById('plVTitle').textContent='';
+    document.getElementById('plVMeta').textContent='';
+  } else {
+    renderPlaylistItems(c,0);
+    playVid(c,0);
+  }
+  openModal('playlistModal');
+}
+
+function renderPlaylistItems(c,activeIdx){
+  const vids=c.videos||[];
+  document.getElementById('plItems').innerHTML=vids.map((v,i)=>{
+    const thumb=v.type==='yt'?ytThumb(v.url):'';
+    const thumbHtml=thumb?`<img src="${thumb}" onerror="this.style.display='none'" alt="${v.title}">`:'';
+    return`<div class="pl-item ${i===activeIdx?'active':''}" onclick="playVid(courses.find(x=>x.id==${c.id}),${i})">
+      <div class="pl-thumb">${thumbHtml}<div class="pl-num">${i+1}</div></div>
+      <div class="pl-info"><div class="pl-title">${v.title||'فيديو '+(i+1)}</div><div class="pl-dur">${v.type==='yt'?'يوتيوب':'ملف فيديو'}</div></div>
+    </div>`;
+  }).join('');
+}
+
+function playVid(c,idx){
+  const vids=c.videos||[];
+  if(idx<0||idx>=vids.length)return;
+  currentVidIdx=idx;
+  const v=vids[idx];
+  document.getElementById('plVTitle').textContent=v.title||'فيديو '+(idx+1);
+  document.getElementById('plVMeta').textContent=`${idx+1} من ${vids.length} • ${v.type==='yt'?'يوتيوب':'ملف فيديو'}`;
+  document.getElementById('plCurrent').textContent=`${idx+1}/${vids.length}`;
+  const pl=document.getElementById('plPlayer');
+  if(v.type==='yt'){
+    const id=ytId(v.url);
+    pl.innerHTML=id?`<iframe src="https://www.youtube.com/embed/${id}?autoplay=1" allowfullscreen allow="autoplay" title="${v.title}"></iframe>`:`<div class="vplayer-ph"><p style="font-size:13px">رابط غير صحيح</p></div>`;
+  } else if(v.type==='file'&&v.dataUrl){
+    pl.innerHTML=`<video controls style="width:100%;height:100%;border-radius:10px" src="${v.dataUrl}"></video>`;
+  } else {
+    pl.innerHTML=`<div class="vplayer-ph"><div style="font-size:30px;margin-bottom:6px">📽</div><p style="font-size:13px">لا يمكن تشغيل الفيديو</p></div>`;
+  }
+  renderPlaylistItems(c,idx);
+}
+
+// VIDEO BUILDER
+function addVideoRow(type){
+  vbCnt++;
+  const id=vbCnt;
+  const empty=document.getElementById('vbEmpty');
+  if(empty)empty.style.display='none';
+  const div=document.createElement('div');
+  div.className='vb-item';div.id='vb_'+id;
+  if(type==='yt'){
+    div.innerHTML=`<div class="vb-item-header">
+      <div class="vb-num">${document.querySelectorAll('#videoBuilder .vb-item').length+1}</div>
+      <span class="vb-item-title" style="color:var(--text-muted);font-size:12px"><i class="ti ti-brand-youtube" aria-hidden="true"></i> رابط يوتيوب</span>
+      <button class="vb-remove" onclick="removeVb('vb_${id}')">✕</button>
+    </div>
+    <div class="form-group" style="margin-bottom:6px"><input class="form-input" id="vbt_${id}" placeholder="عنوان الفيديو" style="margin-bottom:5px">
+    <input class="form-input" id="vbu_${id}" placeholder="https://www.youtube.com/watch?v=..." oninput="previewYT('${id}')"></div>
+    <img id="vbprev_${id}" style="display:none;width:100%;border-radius:6px;max-height:100px;object-fit:cover" alt="معاينة">`;
+  } else {
+    div.innerHTML=`<div class="vb-item-header">
+      <div class="vb-num">${document.querySelectorAll('#videoBuilder .vb-item').length+1}</div>
+      <span class="vb-item-title" style="color:var(--text-muted);font-size:12px"><i class="ti ti-upload" aria-hidden="true"></i> رفع فيديو</span>
+      <button class="vb-remove" onclick="removeVb('vb_${id}')">✕</button>
+    </div>
+    <div class="form-group" style="margin-bottom:6px"><input class="form-input" id="vbt_${id}" placeholder="عنوان الفيديو" style="margin-bottom:5px"></div>
+    <div class="upload-area" id="vbua_${id}">
+      <i class="ti ti-video" aria-hidden="true" style="font-size:20px;margin-bottom:4px;display:block"></i>
+      <span id="vbfn_${id}">اضغط لاختيار ملف فيديو (MP4, WebM)</span>
+      <input type="file" accept="video/*" onchange="handleVideoFile(event,'${id}')">
+    </div>
+    <video id="vbvid_${id}" controls style="display:none;width:100%;border-radius:6px;margin-top:6px;max-height:100px"></video>`;
+  }
+  document.getElementById('videoBuilder').appendChild(div);
+  renumberVb();
+}
+
+function previewYT(id){
+  const url=document.getElementById('vbu_'+id)?.value;
+  const thumb=ytThumb(url||'');
+  const prev=document.getElementById('vbprev_'+id);
+  if(prev){prev.src=thumb||'';prev.style.display=thumb?'block':'none';}
+}
+
+function handleVideoFile(e,id){
+  const file=e.target.files[0];if(!file)return;
+  const fn=document.getElementById('vbfn_'+id);
+  if(fn)fn.textContent=file.name;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const vid=document.getElementById('vbvid_'+id);
+    if(vid){vid.src=ev.target.result;vid.style.display='block';}
+    // store data URL on element
+    e.target._dataUrl=ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeVb(id){
+  document.getElementById(id)?.remove();
+  renumberVb();
+  const items=document.querySelectorAll('#videoBuilder .vb-item');
+  const empty=document.getElementById('vbEmpty');
+  if(empty)empty.style.display=items.length?'none':'';
+}
+
+function renumberVb(){
+  document.querySelectorAll('#videoBuilder .vb-item .vb-num').forEach((el,i)=>el.textContent=i+1);
+}
+
+// SAVE COURSE
+function openAddCourse(){
+  document.getElementById('acId').value='';
+  document.getElementById('acName').value='';
+  document.getElementById('acDesc').value='';
+  document.getElementById('acGrade').value='';
+  document.getElementById('acTerm').value='';
+  document.getElementById('videoBuilder').innerHTML='';
+  document.getElementById('vbEmpty').style.display='';
+  document.getElementById('acModalTitle').textContent='إضافة كورس جديد';
+  vbCnt=0;
+  openModal('addCourseModal');
+}
+
+function editCourse(id){
+  const c=courses.find(x=>x.id===id);if(!c)return;
+  document.getElementById('acId').value=id;
+  document.getElementById('acName').value=c.name;
+  document.getElementById('acDesc').value=c.desc||'';
+  document.getElementById('acGrade').value=c.grade;
+  document.getElementById('acTerm').value=c.term;
+  document.getElementById('videoBuilder').innerHTML='';
+  document.getElementById('vbEmpty').style.display=(c.videos&&c.videos.length)?'none':'';
+  vbCnt=0;
+  // Re-add existing videos
+  (c.videos||[]).forEach(v=>{
+    vbCnt++;
+    const id=vbCnt;
+    const div=document.createElement('div');
+    div.className='vb-item';div.id='vb_'+id;
+    div.innerHTML=`<div class="vb-item-header">
+      <div class="vb-num">${vbCnt}</div>
+      <span class="vb-item-title" style="color:var(--text-muted);font-size:12px"><i class="ti ti-brand-youtube" aria-hidden="true"></i> رابط يوتيوب</span>
+      <button class="vb-remove" onclick="removeVb('vb_${id}')">✕</button>
+    </div>
+    <div class="form-group" style="margin-bottom:6px"><input class="form-input" id="vbt_${id}" placeholder="عنوان الفيديو" value="${v.title||''}" style="margin-bottom:5px">
+    <input class="form-input" id="vbu_${id}" placeholder="رابط يوتيوب" value="${v.url||''}" oninput="previewYT('${id}')"></div>
+    <img id="vbprev_${id}" src="${ytThumb(v.url)}" style="${ytThumb(v.url)?'':'display:none'};width:100%;border-radius:6px;max-height:100px;object-fit:cover" alt="">`;
+    document.getElementById('videoBuilder').appendChild(div);
+  });
+  document.getElementById('acModalTitle').textContent='تعديل الكورس';
+  openModal('addCourseModal');
+}
+
+function saveCourse(){
+  const name=document.getElementById('acName').value.trim();
+  const grade=document.getElementById('acGrade').value;
+  const term=document.getElementById('acTerm').value;
+  if(!name||!grade||!term){toast('⚠️ يرجى تعبئة الاسم والصف والترم');return}
+  // collect videos
+  const videos=[];
+  document.querySelectorAll('#videoBuilder .vb-item').forEach(item=>{
+    const vid_id=item.id.replace('vb_','');
+    const title=document.getElementById('vbt_'+vid_id)?.value.trim()||'';
+    const urlEl=document.getElementById('vbu_'+vid_id);
+    const fileInput=item.querySelector('input[type=file]');
+    if(urlEl){
+      videos.push({title,type:'yt',url:urlEl.value.trim()});
+    } else if(fileInput&&fileInput._dataUrl){
+      videos.push({title,type:'file',dataUrl:fileInput._dataUrl});
+    } else if(fileInput){
+      // check video element
+      const vidEl=document.getElementById('vbvid_'+vid_id);
+      if(vidEl&&vidEl.src)videos.push({title,type:'file',dataUrl:vidEl.src});
+    }
+  });
+  const data={name,grade,term,desc:document.getElementById('acDesc').value.trim(),videos};
+  const eid=document.getElementById('acId').value;
+  if(eid){const i=courses.findIndex(c=>c.id==eid);if(i>=0)courses[i]={...courses[i],...data};toast('✅ تم تعديل الكورس');}
+  else{courses.unshift({id:ncId++,...data});toast('✅ تمت إضافة الكورس');}
+  closeModal('addCourseModal');renderCourses();stats();
+}
+
+function delCourse(id){
+  if(!confirm('حذف هذا الكورس؟'))return;
+  courses=courses.filter(c=>c.id!==id);renderCourses();stats();toast('🗑 تم الحذف');
+}
+
+// EXAMS
+let qCnt2=0;
+function addQ(){
+  qCnt2++;const id=qCnt2;
+  const div=document.createElement('div');
+  div.className='q-item';div.id='qq_'+id;
+  div.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+    <span style="font-size:11px;font-weight:500;color:var(--text-muted)">سؤال ${qCnt2}</span>
+    <button onclick="document.getElementById('qq_${id}').remove()" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px">✕</button>
+  </div>
+  <input class="form-input" id="qt_${id}" placeholder="نص السؤال..." style="margin-bottom:6px">
+  <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">صورة للسؤال (رابط - اختياري)</div>
+  <input class="form-input" id="qi_${id}" placeholder="https://... رابط الصورة" oninput="prevQImg('${id}')">
+  <img id="qprev_${id}" style="display:none;width:100%;border-radius:5px;margin-top:5px;max-height:110px;object-fit:cover" alt="">`;
+  document.getElementById('qBuilder').appendChild(div);
+}
+function prevQImg(id){
+  const v=document.getElementById('qi_'+id)?.value;
+  const img=document.getElementById('qprev_'+id);
+  if(img){img.src=v||'';img.style.display=v?'block':'none';}
+}
+function saveExam(){
+  const name=document.getElementById('exName').value.trim();
+  const grade=document.getElementById('exGrade').value;
+  if(!name||!grade){toast('⚠️ يرجى تعبئة الاسم والصف');return}
+  const questions=[];
+  document.querySelectorAll('#qBuilder .q-item').forEach(item=>{
+    const id=item.id.replace('qq_','');
+    const text=document.getElementById('qt_'+id)?.value.trim()||'';
+    const img=document.getElementById('qi_'+id)?.value.trim()||'';
+    if(text)questions.push({text,img});
+  });
+  exams.unshift({id:neId++,name,grade,term:document.getElementById('exTerm').value,duration:parseInt(document.getElementById('exDur').value)||60,questions});
+  document.getElementById('qBuilder').innerHTML='';qCnt2=0;
+  document.getElementById('exName').value='';document.getElementById('exGrade').value='';
+  closeModal('addExamModal');renderExams();stats();toast('✅ تمت إضافة الامتحان');
+}
+
+function renderExams(){
+  const g=document.getElementById('examsGrid');
+  if(!exams.length){g.innerHTML=`<div class="empty"><div style="font-size:36px;margin-bottom:.6rem">📝</div><p>لا توجد امتحانات بعد</p></div>`;return}
+  g.innerHTML=exams.map(e=>{
+    const locked=!role;
+    const lockOv=locked?`<div class="locked-ov"><i class="ti ti-lock" aria-hidden="true"></i><span>سجّل دخولك</span></div>`:'';
+    const adminA=role==='admin'?`<div class="card-actions"><button class="ca-btn" onclick="event.stopPropagation();exams=exams.filter(x=>x.id!==${e.id});renderExams();stats();toast('🗑 تم الحذف')"><i class="ti ti-trash" aria-hidden="true"></i> حذف</button></div>`:'';
+    return`<div class="exam-card" onclick="openExam(${e.id})">
+      <div class="card-thumb" style="background:linear-gradient(135deg,#1a3a1a,#2d5a2d)">
+        <i class="ti ti-file-text" style="font-size:38px;color:rgba(255,255,255,0.25)" aria-hidden="true"></i>
+        <div class="thumb-ov"><div class="play-ic"><i class="ti ti-eye" aria-hidden="true"></i></div></div>
+        <span class="card-badge">${e.grade}</span>${lockOv}
+      </div>
+      <div class="card-body">
+        <span class="grade-tag">${e.term||''}</span>
+        <div class="card-title">${e.name}</div>
+        <div class="card-meta">${e.questions.length} سؤال • ${e.duration} دقيقة</div>
+      </div>${adminA}
+    </div>`;
+  }).join('');
+}
+
+function openExam(id){
+  const e=exams.find(x=>x.id===id);if(!e)return;
+  if(!role){toast('🔒 سجّل دخولك أولاً');return}
+  document.getElementById('veTitle').textContent=e.name;
+  document.getElementById('veMeta').innerHTML=`<span class="grade-tag">${e.grade}</span> <span class="era-tag">${e.term||''}</span> • ${e.duration} دقيقة`;
+  document.getElementById('veQs').innerHTML=e.questions.length?e.questions.map((q,i)=>`<div class="q-item"><div style="font-weight:500;margin-bottom:4px">${i+1}. ${q.text}</div>${q.img?`<img src="${q.img}" class="q-img" alt="صورة السؤال">`:''}  </div>`).join(''):`<p style="text-align:center;color:var(--text-muted);padding:1rem;font-size:13px">لا توجد أسئلة بعد</p>`;
+  openModal('viewExamModal');
+}
+
+// STUDENTS
+function renderStudents(){
+  const tb=document.getElementById('studentsTbody');
+  if(!students.length){tb.innerHTML=`<tr><td colspan="9" style="text-align:center;padding:1.5rem;color:var(--text-muted)">لا يوجد طلاب</td></tr>`;return}
+  tb.innerHTML=students.map(s=>{
+    const badge={pending:`<span class="badge badge-pending">قيد المراجعة</span>`,approved:`<span class="badge badge-approved">موافق عليه</span>`,rejected:`<span class="badge badge-rejected">مرفوض</span>`}[s.status];
+    const names=s.enrolled.map(id=>courses.find(c=>c.id===id)?.name||'').filter(Boolean).join('، ')||'—';
+    const acts=s.status==='pending'
+      ?`<button class="btn btn-sm btn-success" onclick="approveS(${s.id})" style="margin-left:4px">✓</button><button class="btn btn-sm btn-danger" onclick="rejectS(${s.id})">✗</button>`
+      :`<button class="btn btn-sm btn-danger" onclick="delS(${s.id})" style="font-size:11px"><i class="ti ti-trash" aria-hidden="true"></i></button>`;
+    return`<tr><td style="font-weight:500">${s.name}</td><td>${s.grade}</td><td>${s.term}</td><td>${s.parentName}</td><td style="font-family:monospace;font-size:11px">${s.phone}</td><td style="font-family:monospace;font-size:11px">${s.parentPhone}</td><td>${badge}</td>
+      <td><span style="font-size:11px;color:var(--text-muted)">${names}</span><br><button class="btn btn-sm" onclick="openEnroll(${s.id})" style="font-size:11px;margin-top:3px"><i class="ti ti-plus" aria-hidden="true"></i> تسجيل</button></td>
+      <td>${acts}</td></tr>`;
+  }).join('');
+}
+function approveS(id){students.find(s=>s.id===id).status='approved';renderStudents();stats();toast('✅ تمت الموافقة')}
+function rejectS(id){students.find(s=>s.id===id).status='rejected';renderStudents();toast('تم الرفض')}
+function delS(id){if(!confirm('حذف الطالب؟'))return;students=students.filter(s=>s.id!==id);renderStudents();stats();toast('🗑 تم الحذف')}
+
+function openEnroll(id){
+  enrollSid=id;
+  const s=students.find(x=>x.id===id);
+  document.getElementById('enrollName').textContent=s.name;
+  document.getElementById('enrollList').innerHTML=courses.map(c=>`
+    <label class="enroll-item">
+      <input type="checkbox" value="${c.id}" ${s.enrolled.includes(c.id)?'checked':''}>
+      <div><div style="font-size:12px;font-weight:500">${c.name}</div><div style="font-size:11px;color:var(--text-muted)">${c.grade} • ${c.term}</div></div>
+    </label>`).join('');
+  openModal('enrollModal');
+}
+function saveEnroll(){
+  const s=students.find(x=>x.id===enrollSid);if(!s)return;
+  s.enrolled=Array.from(document.querySelectorAll('#enrollList input:checked')).map(i=>parseInt(i.value));
+  closeModal('enrollModal');renderStudents();toast('✅ تم تحديث التسجيلات');
+}
+
+document.addEventListener('click',e=>{if(e.target.classList.contains('modal-bg'))closeModal(e.target.id)});
+slSwitch('login');renderCourses();renderExams();stats();
+</script>
